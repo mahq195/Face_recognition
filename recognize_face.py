@@ -59,7 +59,7 @@ while cap.isOpened():
     ret, frame = cap.read()
     count += 1
     if ret:
-        if count%2 ==0:
+        if count%1 ==0:
             faces, boxes, probs = mtcnn(frame, return_prob=True)
             # print('boxes: ', boxes)
             if faces is not None:
