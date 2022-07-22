@@ -7,6 +7,7 @@ import torch
 from torchvision import transforms
 import numpy as np
 from PIL import Image
+import time
 
 frame_size = (640,480)
 IMG_PATH = './data/test_images'
@@ -54,15 +55,16 @@ bbox = 0
 faces = None
 
 while cap.isOpened():
+    time_start = time.time()
     ret, frame = cap.read()
-    frame2 = frame
     count += 1
     if ret:
-        if count%1 ==0:
-            faces, boxes = mtcnn(frame)
+        if count%2 ==0:
+            faces, boxes, probs = mtcnn(frame, return_prob=True)
             # print('boxes: ', boxes)
             if faces is not None:
-                for face, box in zip(faces, boxes):
+                for face, box, prob in zip(faces, boxes, probs):
+                    print("prob: ", prob)
                     score, name = recognize(face)
                     bbox = list(map(int,box.tolist()))
                     cv2.rectangle(frame, (bbox[0],bbox[1]), (bbox[2],bbox[3]), (0,0,255), 6)
@@ -72,7 +74,8 @@ while cap.isOpened():
             if faces is not None:
                 cv2.rectangle(frame, (bbox[0],bbox[1]), (bbox[2],bbox[3]), (0,0,255), 6)
                 cv2.putText(frame, str(name) + '_{:.2f}'.format(score), (bbox[0],bbox[1]), cv2.FONT_HERSHEY_DUPLEX, 1, (0,255,0), 2, cv2.LINE_8 )
-
-    cv2.imshow('Face Recognition', frame2)
+    time_end = time.time()
+    cv2.putText(frame, 'FPS: ' + str(int(1/(time_end-time_start))), (20,25), cv2.FONT_HERSHEY_TRIPLEX, 1, (0,0,0), 2)
+    cv2.imshow('Face Recognition', frame)
     if cv2.waitKey(1)&0xFF == 27:
         break
