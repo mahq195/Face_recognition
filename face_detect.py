@@ -22,7 +22,7 @@ while cap.isOpened():
         if boxes is not None:
             for box in boxes:
                 bbox = list(map(int,box.tolist()))
-                frame = cv2.rectangle(frame,(bbox[0],bbox[1]),(bbox[2],bbox[3]),(0,0,255),6)
+                frame = cv2.rectangle(frame,(bbox[0],bbox[1]),(bbox[2],bbox[3]),(0,0,255),2)
                 # Bo comment phan duoi neu cac ban muon xem 5-points tren mat
 
                 # if(not isinstance(points_list, list)):
@@ -32,8 +32,10 @@ while cap.isOpened():
                 #         frame = cv2.circle(frame, (int(points[0]), int(points[1])), radius=0, color=(0,0,255), thickness=10)
     new_frame_time = time.time()
     fps = 1/(new_frame_time-prev_frame_time)
+    print('time :', new_frame_time-prev_frame_time)
     prev_frame_time = new_frame_time
     fps = str(int(fps))
+    
     cv2.putText(frame, fps, (7, 70), cv2.FONT_HERSHEY_DUPLEX, 3, (100, 255, 0), 3, cv2.LINE_AA)
     cv2.imshow('Face Detection', frame)
     if cv2.waitKey(1)&0xFF == 27:
